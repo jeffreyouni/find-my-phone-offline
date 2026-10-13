@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">找手机</string>
+    <string name="notif_listening_title">正在监听“%1$s”</string>
+    <string name="notif_listening_text">麦克风已开启，音频仅在本机处理。</string>
+    <string name="notif_loading_title">正在加载离线语音模型…</string>
+    <string name="notif_stop">停止监听</string>
+    <string name="notif_alarm_title">我在这里！手机警报正在响</string>
+    <string name="notif_alarm_text">点击打开，或停止警报。</string>
+    <string name="notif_stop_alarm">停止警报</string>
+    <string name="status_off">未在监听</string>
+    <string name="status_loading">正在加载离线模型…</string>
+    <string name="status_listening">监听中 — 麦克风已开启</string>
+    <string name="status_alarm">警报响铃中</string>
+    <string name="start_listening">开始监听</string>
+    <string name="stop_listening">停止监听</string>
+    <string name="test_alarm">测试警报</string>
+    <string name="stop_alarm">停止警报</string>
+    <string name="wake_phrase">唤醒词</string>
+    <string name="say_phrase">说“%1$s”让手机响铃</string>
+    <string name="settings">设置</string>
+    <string name="alarm_screen_title">手机在这里！</string>
+    <string name="privacy_note">所有处理都在本机完成，没有联网权限，不录音，不追踪。</string>
+    <string name="sensitivity">灵敏度：%1$d / 10</string>
+    <string name="alarm_duration">时长：%1$d 秒</string>
+    <string name="alarm_volume">音量：%1$d %%</string>
+    <string name="vibration">振动</string>
+    <string name="flashlight">闪光灯闪烁</string>
+    <string name="battery_saver">省电模式</string>
+    <string name="samsung_steps">1. 设置 → 应用程序 → 找手机 → 电池 → 选择“不受限制”。\n2. 设置 → 电池 → 后台使用限制 → 关闭“将未使用的应用程序置于休眠状态”，并确保本应用不在“休眠应用”或“深度休眠应用”中，把它加入“永不自动休眠的应用”。\n3. 设置 → 应用程序 → 找手机 → 权限 → 麦克风 → 允许。\n4. 设置 → 通知 → 应用通知 → 找手机 → 允许全部通知，包括全屏通知。\n5. 在最近任务中锁定本应用。\n6. 手机重启后，需要打开应用并再次点击“开始监听”（Android 不允许开机后在后台启动麦克风）。</string>
+</resources>
