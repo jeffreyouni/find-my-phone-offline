@@ -44,7 +44,8 @@ fun MainScreen(vm: MainViewModel, micDenied: Boolean, onStart: () -> Unit, openA
     val ui by vm.state.collectAsState()
     val s by vm.settings.flow.collectAsState()
     val phrase = WakePhrases.resolve(s)
-    val listening = ui.status == ListenStatus.LISTENING || ui.status == ListenStatus.LOADING || ui.status == ListenStatus.ALARM
+    val listening = ui.status == ListenStatus.LISTENING || ui.status == ListenStatus.LOADING ||
+        ui.status == ListenStatus.ALARM || ui.status == ListenStatus.WAITING_FOR_LOCK
 
     Scaffold(topBar = {
         TopAppBar(
@@ -77,6 +78,7 @@ fun MainScreen(vm: MainViewModel, micDenied: Boolean, onStart: () -> Unit, openA
                     ListenStatus.OFF -> stringResource(R.string.status_off)
                     ListenStatus.LOADING -> stringResource(R.string.status_loading)
                     ListenStatus.LISTENING -> stringResource(R.string.status_listening)
+                    ListenStatus.WAITING_FOR_LOCK -> stringResource(R.string.status_waiting_lock)
                     ListenStatus.ALARM -> stringResource(R.string.status_alarm)
                     ListenStatus.ERROR -> stringResource(R.string.status_error, ui.error ?: "")
                 },

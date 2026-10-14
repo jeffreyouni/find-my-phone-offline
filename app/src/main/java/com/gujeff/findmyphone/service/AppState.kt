@@ -3,7 +3,7 @@ package com.gujeff.findmyphone.service
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-enum class ListenStatus { OFF, LOADING, LISTENING, ALARM, ERROR }
+enum class ListenStatus { OFF, LOADING, LISTENING, WAITING_FOR_LOCK, ALARM, ERROR }
 
 data class UiState(val status: ListenStatus = ListenStatus.OFF, val error: String? = null, val alarmRinging: Boolean = false)
 

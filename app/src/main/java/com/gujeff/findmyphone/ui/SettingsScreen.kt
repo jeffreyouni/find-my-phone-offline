@@ -93,6 +93,7 @@ fun SettingsScreen(
                 Slider(value = s.sensitivity.toFloat(), onValueChange = { v -> vm.update { it.copy(sensitivity = v.roundToInt()) } },
                     valueRange = 1f..10f, steps = 8)
                 Text(stringResource(R.string.sensitivity_help), style = MaterialTheme.typography.bodySmall)
+                SwitchRow(stringResource(R.string.lock_only), s.lockedOnly, stringResource(R.string.lock_only_help)) { c -> vm.update { it.copy(lockedOnly = c) } }
             }
 
             Section(R.string.section_alarm) {

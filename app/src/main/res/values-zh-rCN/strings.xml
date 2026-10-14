@@ -3,6 +3,8 @@
     <string name="notif_listening_title">正在监听“%1$s”</string>
     <string name="notif_listening_text">麦克风已开启，音频仅在本机处理。</string>
     <string name="notif_loading_title">正在加载离线语音模型…</string>
+    <string name="notif_waiting_lock_title">等待锁屏</string>
+    <string name="notif_waiting_lock_text">麦克风已关闭，锁屏后将自动恢复监听。</string>
     <string name="notif_stop">停止监听</string>
     <string name="notif_alarm_title">我在这里！手机警报正在响</string>
     <string name="notif_alarm_text">点击打开，或停止警报。</string>
@@ -10,6 +12,7 @@
     <string name="status_off">未在监听</string>
     <string name="status_loading">正在加载离线模型…</string>
     <string name="status_listening">监听中 — 麦克风已开启</string>
+    <string name="status_waiting_lock">等待锁屏 — 麦克风已关闭</string>
     <string name="status_alarm">警报响铃中</string>
     <string name="start_listening">开始监听</string>
     <string name="stop_listening">停止监听</string>
@@ -49,6 +52,8 @@
     <string name="battery_saver_help">以更大的音频块读取并忽略较小的声音，灵敏度略有降低。</string>
     <string name="keep_cpu">监听时保持 CPU 唤醒</string>
     <string name="keep_cpu_help">推荐开启。息屏后检测也能持续工作（使用部分唤醒锁）。</string>
+    <string name="lock_only">仅在锁屏状态下监听</string>
+    <string name="lock_only_help">使用手机时自动关闭麦克风，锁屏后自动恢复监听。</string>
     <string name="battery_unrestricted">电池：不受限制</string>
     <string name="battery_restricted">电池：已优化 — 系统可能会停止监听</string>
     <string name="open_battery_settings">电池优化设置</string>

@@ -20,6 +20,7 @@ class Settings private constructor(context: Context) {
         val flashlight: Boolean = true,
         val batterySaver: Boolean = false,
         val keepCpuAwake: Boolean = true,
+        val lockedOnly: Boolean = false,
     )
 
     private val prefs: SharedPreferences = context.applicationContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
@@ -41,6 +42,7 @@ class Settings private constructor(context: Context) {
             .putBoolean("flashlight", v.flashlight)
             .putBoolean("batterySaver", v.batterySaver)
             .putBoolean("keepCpuAwake", v.keepCpuAwake)
+            .putBoolean("lockedOnly", v.lockedOnly)
             .apply()
         _flow.value = v
     }
@@ -58,6 +60,7 @@ class Settings private constructor(context: Context) {
             flashlight = prefs.getBoolean("flashlight", d.flashlight),
             batterySaver = prefs.getBoolean("batterySaver", d.batterySaver),
             keepCpuAwake = prefs.getBoolean("keepCpuAwake", d.keepCpuAwake),
+            lockedOnly = prefs.getBoolean("lockedOnly", d.lockedOnly),
         )
     }
 

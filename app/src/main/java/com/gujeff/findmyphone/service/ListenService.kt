@@ -1,11 +1,14 @@
 package com.gujeff.findmyphone.service
 
+import android.app.KeyguardManager
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.Handler
 import android.os.IBinder
@@ -39,6 +42,12 @@ class ListenService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var started = false
 
+    /** Whether the microphone is currently running (false while waiting for the screen to lock). */
+    private var micActive = false
+    private val screenStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = refreshListening(restartIfActive = false)
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
@@ -48,6 +57,11 @@ class ListenService : Service() {
             onDetected = { main.post { onWakePhraseHeard() } },
             onState = { st, err -> main.post { onListenerState(st, err) } },
         )
+        registerReceiver(screenStateReceiver, IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addAction(Intent.ACTION_USER_PRESENT)
+        })
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -72,15 +86,31 @@ class ListenService : Service() {
         }
         started = true
         acquireWakeLockIfWanted()
-        startListener()
+        refreshListening(restartIfActive = true)
         // Restart detection when anything that affects it changes.
         scope.launch {
             Settings.get().flow
-                .map { Triple(WakePhrases.resolve(it), it.sensitivity, it.batterySaver to it.keepCpuAwake) }
+                .map { Triple(WakePhrases.resolve(it), it.sensitivity, Triple(it.batterySaver, it.keepCpuAwake, it.lockedOnly)) }
                 .distinctUntilChanged().drop(1)
-                .collect { acquireWakeLockIfWanted(); startListener() }
+                .collect { acquireWakeLockIfWanted(); refreshListening(restartIfActive = true) }
         }
         return START_STICKY
+    }
+
+    private fun isKeyguardLocked(): Boolean =
+        (getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager).isKeyguardLocked
+
+    /** Starts or stops the microphone to honor "only listen when locked", without stopping the foreground service. */
+    private fun refreshListening(restartIfActive: Boolean) {
+        if (!started || AlarmController.isRinging) return
+        val shouldListen = !Settings.get().value.lockedOnly || isKeyguardLocked()
+        if (shouldListen) {
+            if (!micActive || restartIfActive) { micActive = true; startListener() }
+        } else {
+            micActive = false
+            listener.stop()
+            postWaitingForLockNotification()
+        }
     }
 
     private fun startListener() {
@@ -116,7 +146,9 @@ class ListenService : Service() {
             // alarm finished or stopped by user
             (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(ALARM_NOTIF_ID)
             listener.paused = false
-            if (started) AppState.set(ListenStatus.LISTENING) else AppState.set(ListenStatus.OFF)
+            if (!started) AppState.set(ListenStatus.OFF)
+            else if (!Settings.get().value.lockedOnly || isKeyguardLocked()) AppState.set(ListenStatus.LISTENING)
+            else { micActive = false; listener.stop(); postWaitingForLockNotification() }
         }
     }
 
@@ -152,6 +184,22 @@ class ListenService : Service() {
     private fun updateNotification(phrase: String, loading: Boolean) {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             .notify(NOTIF_ID, listeningNotification(loading, phrase))
+    }
+
+    private fun postWaitingForLockNotification() {
+        AppState.set(ListenStatus.WAITING_FOR_LOCK)
+        val n = NotificationCompat.Builder(this, FindMyPhoneApp.CHANNEL_LISTENING)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(getString(R.string.notif_waiting_lock_title))
+            .setContentText(getString(R.string.notif_waiting_lock_text))
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setContentIntent(PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), immutable()))
+            .addAction(0, getString(R.string.notif_stop), serviceIntent(ACTION_STOP, 1))
+            .build()
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(NOTIF_ID, n)
     }
 
     private fun postAlarmNotification() {
@@ -202,6 +250,7 @@ class ListenService : Service() {
 
     private fun shutdown(keepError: Boolean = false) {
         started = false
+        micActive = false
         listener.stop()
         AlarmController.stop()
         releaseWakeLock()
@@ -212,7 +261,9 @@ class ListenService : Service() {
 
     override fun onDestroy() {
         started = false
+        micActive = false
         scope.cancel()
+        runCatching { unregisterReceiver(screenStateReceiver) }
         listener.stop()
         AlarmController.stop()
         releaseWakeLock()

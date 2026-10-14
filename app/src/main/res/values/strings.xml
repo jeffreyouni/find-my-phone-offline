@@ -5,6 +5,8 @@
     <string name="notif_listening_title">Listening for “%1$s”</string>
     <string name="notif_listening_text">Microphone is active. Audio is processed on this phone only.</string>
     <string name="notif_loading_title">Preparing offline speech model…</string>
+    <string name="notif_waiting_lock_title">Waiting for lock screen</string>
+    <string name="notif_waiting_lock_text">Microphone is off. Listening resumes when you lock the phone.</string>
     <string name="notif_stop">Stop listening</string>
     <string name="notif_alarm_title">Here I am! Phone alarm is ringing</string>
     <string name="notif_alarm_text">Tap to open, or stop the alarm.</string>
@@ -14,6 +16,7 @@
     <string name="status_off">Not listening</string>
     <string name="status_loading">Loading offline model…</string>
     <string name="status_listening">Listening — microphone ON</string>
+    <string name="status_waiting_lock">Waiting for lock screen — microphone off</string>
     <string name="status_alarm">Alarm ringing</string>
     <string name="status_error">Problem: %1$s</string>
     <string name="start_listening">Start Listening</string>
@@ -49,6 +52,8 @@
     <string name="battery_saver_help">Reads audio in larger blocks and ignores quieter sounds. Slightly less sensitive.</string>
     <string name="keep_cpu">Keep CPU awake while listening</string>
     <string name="keep_cpu_help">Recommended. Lets detection keep working with the screen off. Uses a partial wake lock.</string>
+    <string name="lock_only">Only listen when screen is locked</string>
+    <string name="lock_only_help">Microphone turns off automatically while you are using the phone, and back on once the screen locks.</string>
     <string name="battery_unrestricted">Battery: Unrestricted</string>
     <string name="battery_restricted">Battery: optimized — Android may stop listening</string>
     <string name="open_battery_settings">Battery optimization settings</string>
